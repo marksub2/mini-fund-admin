@@ -48,6 +48,22 @@ class Fund {
     }
 
 }
+
+interface FeePolicy {
+    BigDecimal calculate(BigDecimal amount);
+}
+
+class RateFeePolicy implements FeePolicy {
+    public BigDecimal calculate(BigDecimal price){
+        return price.multiply(new BigDecimal("0.01"));
+    }
+}
+
+class FixedFeePolicy implements FeePolicy {
+    public BigDecimal calculate(BigDecimal price) {
+        return BigDecimal.valueOf(10);
+    }
+}
 public class Main {
     public static void main(String[] args) {
 
@@ -64,7 +80,11 @@ public class Main {
         fund.addTrade(new Trade("LG전자", 5, new BigDecimal("0.5")));
         fund.addTrade(new Trade("SK하이닉스", 10, new BigDecimal("5.5")));
 
-        System.out.println(fund.getTotalAmount());
-
-    }
+        BigDecimal total = fund.getTotalAmount();
+        System.out.println(total);
+        FeePolicy policy = new RateFeePolicy();
+        System.out.println(policy.calculate(total));
+        policy = new FixedFeePolicy();
+        System.out.println(policy.calculate(total));
+        }
 }
